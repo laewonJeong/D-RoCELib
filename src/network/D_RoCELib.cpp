@@ -222,6 +222,7 @@ void D_RoCELib::roce_send_msg(string msg){
     TCP tcp;
     for(int i=0;i<myrdma.connect_num;i++){
         tcp.send_msg(change(msg),myrdma.sock_idx[i]);
+        cout << "send success" << endl;
     }
 }
 void D_RoCELib::roce_recv_msg(int sock_idx, int idx){
@@ -232,7 +233,8 @@ void D_RoCELib::roce_recv_msg(int sock_idx, int idx){
 void D_RoCELib::roce_recv_t(){
     std::vector<std::thread> worker;
     for(int i=0;i<myrdma.connect_num;i++){
-        worker.push_back(std::thread(&D_RoCELib::roce_recv_msg,D_RoCELib(),myrdma.sock_idx1[i],i));
+        worker.push_back(std::thread(&D_RoCELib::roce_recv_msg,D_RoCELib(),myrdma.sock_idx[i],i));
+        cout << "recv_success" << endl;
     }
     for(int i=0;i<myrdma.connect_num;i++){
         worker[i].join();
