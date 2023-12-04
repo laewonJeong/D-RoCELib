@@ -23,6 +23,8 @@ class D_RoCELib{
         void roce_one_to_many_recv_msg();
         void rdma_many_to_one_send_msg(string opcode, string msg);
         void rdma_many_to_one_recv_msg(string opcode);
+        void roce_many_to_one_send_msg(string msg);
+        void roce_many_to_one_recv_msg();
         void rdma_comm(string opcode, string msg);
         void create_rdma_info();
         void send_info_change_qp();

@@ -34,7 +34,7 @@ int main(int argc, char* argv[]){
   string msg;
   //string opcode = "send"; //send, send_with_imm, write, write_with_imm
   
-  cerr << "========================== many_to_many_communication ==========================" << endl;
+  cerr << "========================== many_to_many_communication ==========================\n" << endl;
 
   /* many to many communication*/
   msg = "[ " + ip + " ] Hi many-to-many communication!";
@@ -43,7 +43,7 @@ int main(int argc, char* argv[]){
   for(int i=0;i<num_of_node-1;i++){
     printf("recv_buffer[%d]: %s\n", i, recv_buffer[i]); 
   }
-  cerr << "========================== one_to_many_communication ==========================" << endl;
+  cerr << "\n========================== one_to_many_communication ==========================\n" << endl;
 
   /* 1 to many communication */
   if(is_server(ip)){
@@ -55,19 +55,19 @@ int main(int argc, char* argv[]){
     printf("recv_buffer[0]: %s\n", recv_buffer[0]);
   }
 
-  cerr << "========================== many_to_one_communication ==========================" << endl;
+  cerr << "\n========================== many_to_one_communication ==========================\n" << endl;
 
   /* many to 1 communication */
-  /*if(is_server(ip)){
-    d_rdmalib.rdma_many_to_one_recv_msg(opcode);
+  if(is_server(ip)){
+    d_rocelib.roce_many_to_one_recv_msg();
     for(int i=0;i<num_of_node-1;i++){
       printf("recv_buffer[%d]: %s\n", i, recv_buffer[i]);
     }
   }
   else{
-    msg = "Hi many-to-one communication!";
-    d_rdmalib.rdma_many_to_one_send_msg(opcode,msg);
-  }*/
+    msg = "[ " + ip + " ] Hi many-to-one communication!";
+    d_rocelib.roce_many_to_one_send_msg(msg);
+  }
 
   cerr << "================================================================================" << endl;
 
