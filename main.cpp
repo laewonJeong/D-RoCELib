@@ -38,7 +38,7 @@ int main(int argc, char* argv[]){
 
   /* many to many communication*/
   msg = "[ " + ip + " ] Hi many-to-many communication!";
-  cout << msg << endl;
+  
   d_rocelib.roce_comm(msg);
   for(int i=0;i<num_of_node-1;i++){
     printf("recv_buffer[%d]: %s\n", i, recv_buffer[i]); 
@@ -46,14 +46,14 @@ int main(int argc, char* argv[]){
   cerr << "========================== one_to_many_communication ==========================" << endl;
 
   /* 1 to many communication */
-  /*if(is_server(ip)){
-    msg = "Hi one-to-many communication!";
-    d_rdmalib.rdma_one_to_many_send_msg(opcode, msg);
+  if(is_server(ip)){
+    msg = "[ " + ip + " ] Hi one-to-many communication!";
+    d_rocelib.roce_one_to_many_send_msg(msg);
   }
   else{
-    d_rdmalib.rdma_one_to_many_recv_msg(opcode);
+    d_rocelib.roce_one_to_many_recv_msg();
     printf("recv_buffer[0]: %s\n", recv_buffer[0]);
-  }*/
+  }
 
   cerr << "========================== many_to_one_communication ==========================" << endl;
 

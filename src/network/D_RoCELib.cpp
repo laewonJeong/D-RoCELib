@@ -244,6 +244,14 @@ void D_RoCELib::roce_comm(string msg){
 
     snd_msg.join();
 }
+void D_RoCELib::roce_one_to_many_send_msg(string msg){
+    D_RoCELib::roce_send_msg(msg);
+}
+
+void D_RoCELib::roce_one_to_many_recv_msg(){
+    D_RoCELib::roce_recv_msg(myrdma.sock_idx[0],0);
+}
+
 void D_RoCELib::send_info_change_qp(){
     TCP tcp;
     RDMA rdma;

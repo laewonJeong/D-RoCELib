@@ -19,6 +19,8 @@ class D_RoCELib{
         void recv_t(string opcode);
         void rdma_one_to_many_send_msg(string opcode, string msg);
         void rdma_one_to_many_recv_msg(string opcode);
+        void roce_one_to_many_send_msg(string msg);
+        void roce_one_to_many_recv_msg();
         void rdma_many_to_one_send_msg(string opcode, string msg);
         void rdma_many_to_one_recv_msg(string opcode);
         void rdma_comm(string opcode, string msg);
