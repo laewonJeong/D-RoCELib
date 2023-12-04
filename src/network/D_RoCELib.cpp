@@ -213,14 +213,14 @@ void D_RoCELib::roce_comm(string msg){
     }
 
     for(int i=0;i<myrdma.connect_num;i++){
-        if (send(clnt_socks[i], change(msg), strlen(change(msg)), 0) == -1) {
+        if (send( myrdma.sock_idx[i], change(msg), strlen(change(msg)), 0) == -1) {
             std::cerr << "Error sending data" << std::endl;
         }
     }
 
     char buffer[buf_size];
     for(int i=0;i<myrdma.connect_num;i++){
-        if (recv(clnt_socks[i], buffer, sizeof(buffer), 0) == -1) {
+        if (recv( myrdma.sock_idx[i], buffer, sizeof(buffer), 0) == -1) {
             std::cerr << "Error receiving data" << std::endl;
         }
         else
