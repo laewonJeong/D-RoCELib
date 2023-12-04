@@ -38,10 +38,11 @@ int main(int argc, char* argv[]){
 
   /* many to many communication*/
   msg = "[ " + ip + " ] Hi many-to-many communication!";
+  cout << msg << endl;
   d_rocelib.roce_comm(msg);
-  /*for(int i=0;i<num_of_node-1;i++){
+  for(int i=0;i<num_of_node-1;i++){
     printf("recv_buffer[%d]: %s\n", i, recv_buffer[i]); 
-  }*/
+  }
   cerr << "========================== one_to_many_communication ==========================" << endl;
 
   /* 1 to many communication */

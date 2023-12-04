@@ -166,6 +166,13 @@ void D_RoCELib::initialize_connection(const char* ip, string server[],
     myrdma.send_buffer = &send[0];
     myrdma.recv_buffer = &recv[0];
     myrdma.connect_num = number_of_server - 1;
+
+    int *clnt_socks = tcp.client_sock();
+ 
+    for(int idx=0; idx < myrdma.connect_num+1; idx++){
+        if(clnt_socks[idx]!=0)
+            myrdma.sock_idx.push_back(idx);
+    }
 }
 void D_RoCELib::create_rdma_info(){
     RDMA rdma;
@@ -204,29 +211,32 @@ void D_RoCELib::create_rdma_info(){
     }
     cerr << "[ SUCCESS ]" << endl;
 }
-void D_RoCELib::roce_comm(string msg){
-    TCP tcp;
-    int *clnt_socks = tcp.client_sock();
-    for(int idx=0; idx < myrdma.connect_num+1; idx++){
-        if(clnt_socks[idx]!=0)
-            myrdma.sock_idx.push_back(idx);
-    }
-
+void D_RoCELib::roce_send_msg(string msg){
     for(int i=0;i<myrdma.connect_num;i++){
         if (send( myrdma.sock_idx[i], change(msg), strlen(change(msg)), 0) == -1) {
-            std::cerr << "Error sending data" << std::endl;
+            std::cout << "Error sending data" << std::endl;
         }
     }
-
-    char buffer[buf_size];
+}
+void D_RoCELib::roce_recv_msg(int sock_idx, int idx){
+    if (recv(sock_idx, myrdma.recv_buffer[idx], sizeof(myrdma.recv_buffer[idx]), 0) == -1) {
+        std::cerr << "Error receiving data" << std::endl;
+    }
+}
+void D_RoCELib::roce_recv_t(){
+    std::vector<std::thread> worker;
     for(int i=0;i<myrdma.connect_num;i++){
-        if (recv( myrdma.sock_idx[i], buffer, sizeof(buffer), 0) == -1) {
-            std::cerr << "Error receiving data" << std::endl;
-        }
-        else
-            cout << buffer << endl;
+        worker.push_back(std::thread(&D_RoCELib::roce_recv_msg,D_RoCELib(),myrdma.sock_idx[i],i));
     }
+    for(int i=0;i<myrdma.connect_num;i++){
+        worker[i].join();
+    }
+}
+void D_RoCELib::roce_comm(string msg){
+    thread snd_msg = thread(&D_RoCELib::roce_send_msg,D_RoCELib(),msg);
+    D_RoCELib::roce_recv_t();
 
+    snd_msg.join();
 }
 void D_RoCELib::send_info_change_qp(){
     TCP tcp;

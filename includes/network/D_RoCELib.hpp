@@ -29,6 +29,9 @@ class D_RoCELib{
                                         int number_of_server, int Port,
                                         char send[][buf_size], char recv[][buf_size]);
         void roce_comm(string msg);
+        void roce_send_msg(string msg);
+        void roce_recv_msg(int sock_idx, int idx);
+        void roce_recv_t();
         void exit_rdma();
     private:
         std::vector<tuple<struct ibv_context*, struct ibv_pd*, 
