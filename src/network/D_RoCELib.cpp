@@ -204,6 +204,30 @@ void D_RoCELib::create_rdma_info(){
     }
     cerr << "[ SUCCESS ]" << endl;
 }
+void D_RoCELib::roce_comm(string msg){
+    TCP tcp;
+    int *clnt_socks = tcp.client_sock();
+    for(int idx=0; idx < myrdma.connect_num+1; idx++){
+        if(clnt_socks[idx]!=0)
+            myrdma.sock_idx.push_back(idx);
+    }
+
+    for(int i=0;i<myrdma.connect_num;i++){
+        if (send(clnt_socks[i], change(msg), strlen(change(msg)), 0) == -1) {
+            std::cerr << "Error sending data" << std::endl;
+        }
+    }
+
+    char buffer[buf_size];
+    for(int i=0;i<myrdma.connect_num;i++){
+        if (recv(clnt_socks[i], buffer, sizeof(buffer), 0) == -1) {
+            std::cerr << "Error receiving data" << std::endl;
+        }
+        else
+            cout << buffer << endl;
+    }
+
+}
 void D_RoCELib::send_info_change_qp(){
     TCP tcp;
     RDMA rdma;
@@ -294,19 +318,6 @@ void D_RoCELib::rdma_many_to_one_send_msg(string opcode, string msg){
         exit(1);
     }
 }
-void D_RoCELib::rdma_many_to_one_recv_msg(string opcode){
-    D_RoCELib::recv_t(opcode);
-}
-void D_RoCELib::exit_rdma(){
-    for(int j=0;j<2;j++){
-        for(int i=0;i<myrdma.connect_num;i++){
-            ibv_destroy_qp(get<4>(myrdma.rdma_info[j][i]));
-            ibv_dereg_mr(get<5>(myrdma.rdma_info[j][i]));
-            ibv_destroy_cq(get<3>(myrdma.rdma_info[j][i]));
-            ibv_dealloc_pd(get<1>(myrdma.rdma_info[j][i]));
-            ibv_close_device(get<0>(myrdma.rdma_info[j][i]));
-        }
-    }
-}
+
 
 

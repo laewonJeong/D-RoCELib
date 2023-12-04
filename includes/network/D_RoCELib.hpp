@@ -28,6 +28,7 @@ class D_RoCELib{
         void initialize_connection(const char* ip, string server[], 
                                         int number_of_server, int Port,
                                         char send[][buf_size], char recv[][buf_size]);
+        void roce_comm(string msg);
         void exit_rdma();
     private:
         std::vector<tuple<struct ibv_context*, struct ibv_pd*, 

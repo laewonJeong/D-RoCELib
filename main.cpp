@@ -30,16 +30,16 @@ int main(int argc, char* argv[]){
 
   cerr << "================================================================================" << endl;
   
-  //string ip = argv[1];
-  //string msg;
+  string ip = argv[1];
+  string msg;
   //string opcode = "send"; //send, send_with_imm, write, write_with_imm
   
   cerr << "========================== many_to_many_communication ==========================" << endl;
 
   /* many to many communication*/
-  /*msg = "[ " + ip + " ] Hi many-to-many communication!";
-  d_rdmalib.rdma_comm(opcode, msg);
-  for(int i=0;i<num_of_node-1;i++){
+  msg = "[ " + ip + " ] Hi many-to-many communication!";
+  d_rocelib.roce_comm(msg);
+  /*for(int i=0;i<num_of_node-1;i++){
     printf("recv_buffer[%d]: %s\n", i, recv_buffer[i]); 
   }*/
   cerr << "========================== one_to_many_communication ==========================" << endl;
