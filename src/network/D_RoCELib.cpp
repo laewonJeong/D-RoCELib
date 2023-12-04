@@ -91,9 +91,9 @@ void D_RoCELib::rdma_send_recv(int i){
 
 void D_RoCELib::rdma_write_recv(int i){
     TCP tcp;
-    while(tcp.recv_msg(myrdma.sock_idx[i]) <= 0);
-    cerr << strlen(myrdma.recv_buffer[i])/(1024*1024) <<"Mb data ";
-    cerr << "recv success" << endl;
+    //while(tcp.recv_msg(myrdma.sock_idx[i]) <= 0);
+    //cerr << strlen(myrdma.recv_buffer[i])/(1024*1024) <<"Mb data ";
+    //cerr << "recv success" << endl;
 }
 
 void D_RoCELib::rdma_send_msg(string opcode, string msg){
@@ -222,19 +222,17 @@ void D_RoCELib::roce_send_msg(string msg){
     TCP tcp;
     for(int i=0;i<myrdma.connect_num;i++){
         tcp.send_msg(change(msg),myrdma.sock_idx[i]);
-        cout << "send success" << endl;
     }
 }
 void D_RoCELib::roce_recv_msg(int sock_idx, int idx){
-    int str_len;
-    str_len = read(sock_idx, myrdma.recv_buffer[idx], sizeof(myrdma.recv_buffer[idx]));
-    
+    TCP tcp;
+    int str_len = tcp.recv_msg(sock_idx,myrdma.recv_buffer[idx],buf_size);
 }
 void D_RoCELib::roce_recv_t(){
     std::vector<std::thread> worker;
     for(int i=0;i<myrdma.connect_num;i++){
         worker.push_back(std::thread(&D_RoCELib::roce_recv_msg,D_RoCELib(),myrdma.sock_idx[i],i));
-        cout << "recv_success" << endl;
+        
     }
     for(int i=0;i<myrdma.connect_num;i++){
         worker[i].join();

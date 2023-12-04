@@ -8,10 +8,10 @@ void TCP::send_msg(const char* m, int ip){
    write(tcp->clnt_socks[ip],m,strlen(m));
    mutx.unlock();
 }
-int TCP::recv_msg(int ip){
-   char msg[100];
+int TCP::recv_msg(int ip,char* recv,double buf_size){
+   //char msg[100];
    int str_len;
-   str_len=read(tcp->new_sock[ip], msg, 100);
+   str_len=read(tcp->new_sock[ip], recv, buf_size);
    //cout << str_len << endl;
    return str_len;
 }

@@ -23,7 +23,7 @@ class TCP{
         void client(string ip, int idx);
         void client_t(const char* ip, string server[]);
         void send_msg(const char* m,int ip);
-        int recv_msg(int ip);
+        int recv_msg(int ip,char* recv, double buf_size);
         int *client_sock();
         int *server_sock();
         map<string, string> read_rdma_info(int ip);
