@@ -111,3 +111,6 @@ map<string, string> TCP::read_rdma_info(int ip){
 int *TCP::client_sock(){
    return tcp->clnt_socks;
 }
+int *TCP::server_sock(){
+   return tcp->new_sock;
+}

@@ -161,7 +161,7 @@ void D_RoCELib::recv_t(string opcode){
 void D_RoCELib::initialize_connection(const char* ip, string server[], 
                                             int number_of_server, int Port, 
                                             char send[][buf_size], char recv[][buf_size]){
-    TCP tcp;
+    TCP tcp;                                       
     tcp.connect_tcp(ip, server, number_of_server, Port);
     myrdma.send_buffer = &send[0];
     myrdma.recv_buffer = &recv[0];
@@ -172,6 +172,13 @@ void D_RoCELib::initialize_connection(const char* ip, string server[],
     for(int idx=0; idx < myrdma.connect_num+1; idx++){
         if(clnt_socks[idx]!=0)
             myrdma.sock_idx.push_back(idx);
+    }
+
+    int *serv_socks = tcp.server_sock();
+ 
+    for(int idx=0; idx < myrdma.connect_num+1; idx++){
+        if(serv_socks[idx]!=0)
+            myrdma.sock_idx1.push_back(idx);
     }
 }
 void D_RoCELib::create_rdma_info(){
@@ -212,21 +219,20 @@ void D_RoCELib::create_rdma_info(){
     cerr << "[ SUCCESS ]" << endl;
 }
 void D_RoCELib::roce_send_msg(string msg){
+    TCP tcp;
     for(int i=0;i<myrdma.connect_num;i++){
-        if (send( myrdma.sock_idx[i], change(msg), strlen(change(msg)), 0) == -1) {
-            std::cout << "Error sending data" << std::endl;
-        }
+        tcp.send_msg(change(msg),myrdma.sock_idx[i]);
     }
 }
 void D_RoCELib::roce_recv_msg(int sock_idx, int idx){
-    if (recv(sock_idx, myrdma.recv_buffer[idx], sizeof(myrdma.recv_buffer[idx]), 0) == -1) {
-        std::cerr << "Error receiving data" << std::endl;
-    }
+    int str_len;
+    str_len = read(sock_idx, myrdma.recv_buffer[idx], sizeof(myrdma.recv_buffer[idx]));
+    
 }
 void D_RoCELib::roce_recv_t(){
     std::vector<std::thread> worker;
     for(int i=0;i<myrdma.connect_num;i++){
-        worker.push_back(std::thread(&D_RoCELib::roce_recv_msg,D_RoCELib(),myrdma.sock_idx[i],i));
+        worker.push_back(std::thread(&D_RoCELib::roce_recv_msg,D_RoCELib(),myrdma.sock_idx1[i],i));
     }
     for(int i=0;i<myrdma.connect_num;i++){
         worker[i].join();

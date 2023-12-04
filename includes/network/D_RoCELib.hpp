@@ -42,5 +42,6 @@ class D_RoCELib{
         char (*send_buffer)[buf_size];
         char (*recv_buffer)[buf_size];
         vector<int> sock_idx;
+        vector<int> sock_idx1;
         int connect_num;
 };
