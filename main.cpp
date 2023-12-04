@@ -24,15 +24,14 @@ int main(int argc, char* argv[]){
     cerr << "node[0] is not server_ip" << endl;
     exit(1);
   }
+
   D_RoCELib d_rocelib;
 
   d_rocelib.initialize_connection(argv[1], node, num_of_node, port,send_buffer,recv_buffer);
 
-  cerr << "================================================================================" << endl;
   
   string ip = argv[1];
   string msg;
-  //string opcode = "send"; //send, send_with_imm, write, write_with_imm
   
   cerr << "========================== many_to_many_communication ==========================\n" << endl;
 
@@ -49,6 +48,7 @@ int main(int argc, char* argv[]){
   if(is_server(ip)){
     msg = "[ " + ip + " ] Hi one-to-many communication!";
     d_rocelib.roce_one_to_many_send_msg(msg);
+    cout << "ONE TO MANY SEND SUCCESS" << endl;
   }
   else{
     d_rocelib.roce_one_to_many_recv_msg();
@@ -67,6 +67,8 @@ int main(int argc, char* argv[]){
   else{
     msg = "[ " + ip + " ] Hi many-to-one communication!";
     d_rocelib.roce_many_to_one_send_msg(msg);
+
+    cout << "MANY TO ONE SEND SUCCESS" << endl;
   }
 
   cerr << "================================================================================" << endl;
